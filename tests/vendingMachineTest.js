@@ -3,30 +3,77 @@ require('babel-core/register')({
 });
 
 const assert = require('chai').assert
-const VendingMachine = require('../vendingMachine').default
+const Machine = require('../machine').default
 const Person = require('../person').default
 
-describe('Elevator', function() {
-  const vendingMachine = new VendingMachine()
-  const alex = new Person("Alex", 100)
+describe('Machine', function() {
+  const newMachine = new Machine()
+  const Shua = new Person("Shua", 100)
 
   afterEach(function() {
-    vendingMachine.reset();
+    newMachine.reset();
   });
 
-  xit('should bring a rider to a floor above their current floor', () => {
-    // Assert the current status of the vendingMachine is idle
-    assert.equal(vendingMachine.status, 'idle')
-
-    // Alex inserts a dollar into the vending machine
-    vendingMachine.insertCredit(alex, 100)
-
-    // Assert the current status of the vendingMachine is 'credited' after credits inserted
-    assert.equal(vendingMachine.status, 'credited')
-    // Assert the total number of credits is 100 cents ($1.00) after credits inserted
-    assert.equal(vendingMachine.credits, 100)
-    // Assert the total number of change is 0 cents ($0.00) before selection is made
-    assert.equal(vendingMachine.change, 0)
+  it('should accept credits', () => {
+    assert.equal(newMachine.state.status, 'idle')
+    newMachine.acceptCredits(Shua, 100)
+    assert.equal(newMachine.state.status, 'credited')
+    assert.equal(newMachine.state.credits, 100)
+    assert.equal(newMachine.state.change, 0)
   });
+
+  it('should check credits', () => {
+    assert.equal(newMachine.state.status, 'idle')
+    newMachine.acceptCredits(Shua, 100)
+    assert.equal(newMachine.state.status, 'credited')
+    assert.equal(newMachine.state.credits, 100)
+    newMachine.checkCredits('b4')
+  });
+
+  it('should fail if not enough credits', () => {
+    assert.equal(newMachine.state.status, 'idle')
+    newMachine.acceptCredits(Shua, 50)
+    assert.equal(newMachine.state.status, 'credited')
+    assert.equal(newMachine.state.credits, 50)
+    assert.equal(newMachine.checkCredits('c4'), undefined)
+  });
+
+  it('should return change if too many credits are inserted', () => {
+    assert.equal(newMachine.state.status, 'idle')
+    newMachine.acceptCredits(Shua, 100)
+    assert.equal(newMachine.state.status, 'credited')
+    assert.equal(newMachine.state.credits, 100)
+    newMachine.checkCredits('b4')
+    assert.equal(newMachine.state.change, 25)
+  });
+
+  it('should return a treat', () => {
+    assert.equal(newMachine.state.status, 'idle')
+    newMachine.acceptCredits(Shua, 100)
+    assert.equal(newMachine.state.status, 'credited')
+    assert.equal(newMachine.state.credits, 100)
+    newMachine.checkCredits('b4')
+    assert.equal(newMachine.state.selection, 'b4')
+  });
+
+});
+
+describe('Person', function() {
+  const newMachine = new Machine()
+  const Shua = new Person("Shua", 100)
+
+  afterEach(function() {
+    Shua.reset();
+  });
+
+  it('should select and insert credits', () => {
+    assert.equal(Shua.state.credits, 500)
+    Shua.insertCredit(100)
+    assert.equal(Shua.state.credits, 400)
+  });
+
+  it('should select an item to purchase', () => {
+
+  })
 
 });
