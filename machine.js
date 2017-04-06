@@ -1,41 +1,37 @@
-let snacks = {
-  a1: {quantity: 12, price: 75},
-  a2: {quantity: 16, price: 75},
-  a3: {quantity: 1, price: 75},
-  a4: {quantity: 15, price: 75},
-  a5: {quantity: 11, price: 75},
-  a6: {quantity: 15, price: 75},
-  a7: {quantity: 6, price: 75},
-  a8: {quantity: 7, price: 75},
-  a9: {quantity: 9, price: 75},
-  a10: {quantity: 12, price: 75},
-  b1: {quantity: 2, price: 75},
-  b2: {quantity: 2, price: 75},
-  b3: {quantity: 7, price: 75},
-  b4: {quantity: 8, price: 75},
-  b5: {quantity: 2, price: 75},
-  b6: {quantity: 13, price: 75},
-  b7: {quantity: 13, price: 75},
-  b8: {quantity: 16, price: 75},
-  b9: {quantity: 5, price: 75},
-  b10: {quantity: 10, price: 75}
-}
+const Snack = require('./snack').default
 
 export default class Machine {
-  constructor(snacks) {
-    this.state = { status: 'idle', credits: 0, change: 0, selection: null }
+  constructor() {
+    this.state = {
+      status: 'idle',
+      credits: 0,
+      change: 0,
+      selection: null,
+      snacks: {
+        a1: [],
+        a2: [],
+        a3: [],
+        a4: [],
+        a5: [],
+        a6: [],
+        a7: [],
+        a8: [],
+        a9: [],
+        a10: []
+      }
+    }
   }
 
-  acceptCredits(owner, amount) {
+  acceptCredits(amount) {
     this.state.status = 'credited';
     this.state.credits = amount;
   }
 
   checkCredits(selection) {
-    const snackKeys = Object.keys(snacks)
+    const snackKeys = Object.keys(this.state.snacks)
     snackKeys.forEach(snack => {
       if(selection == snack){
-        if(this.state.credits >= snacks[snack].price){
+        if(this.state.credits >= this.state.snacks[snack][0].price){
           this.makeSelection(snack)
         }else{
           alert('Gimme some mo money, fool.')
@@ -45,22 +41,30 @@ export default class Machine {
   }
 
   makeSelection(snack) {
-    snacks[snack].quantity--;
-    this.state.change = this.state.credits - snacks[snack].price;
+    this.state.snacks[snack].shift();
+    this.state.change = this.state.credits - this.state.snacks[snack][0].price;
+    this.state.credits = this.state.credits - this.state.snacks[snack][0].price;
     this.state.selection = snack
-    // this.returnChange();
   }
 
-  // dispenseSnack(snack) {
-  //   this.state.selection = snack
-  //   console.log(snack)
-  //   return this.state.selection
-  // }
-  //
-  // returnChange() {
-  //   console.log(this.state.change)
-  //   return this.state.change
-  // }
+  restock(snack, name, price){
+    while(this.state.snacks[snack].length < 10){
+      this.state.snacks[snack].push(new Snack(name, price))
+    }
+  }
+
+  restockAll(){
+    this.restock('a1','Twix', 75);
+    this.restock('a2','Dingdongs', 100);
+    this.restock('a3','Reeses', 75);
+    this.restock('a4','Doritos', 75);
+    this.restock('a5','Gummy Worms', 100);
+    this.restock('a6','Hot Tamales', 25);
+    this.restock('a7','Choco Taco', 200);
+    this.restock('a8','Real Taco', 100);
+    this.restock('a9','Whoppers', 75);
+    this.restock('a10','Peach Os', 50);
+  }
 
   reset() {
     this.constructor()
