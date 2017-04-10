@@ -39,7 +39,7 @@ describe('Machine', function() {
     newMachine.acceptCredits(100)
     assert.equal(newMachine.state.status, 'credited')
     assert.equal(newMachine.state.credits, 100)
-    newMachine.checkCredits('b4')
+    newMachine.findSnack('b4')
   });
 
   it('should fail if not enough credits', () => {
@@ -48,7 +48,7 @@ describe('Machine', function() {
     newMachine.acceptCredits(50)
     assert.equal(newMachine.state.status, 'credited')
     assert.equal(newMachine.state.credits, 50)
-    assert.equal(newMachine.checkCredits('c4'), undefined)
+    assert.equal(newMachine.findSnack('c4'), undefined)
   });
 
   it('should return change if too many credits are inserted', () => {
@@ -57,7 +57,7 @@ describe('Machine', function() {
     newMachine.acceptCredits(100)
     assert.equal(newMachine.state.status, 'credited')
     assert.equal(newMachine.state.credits, 100)
-    newMachine.checkCredits('a4')
+    newMachine.findSnack('a4')
     assert.equal(newMachine.state.change, 25)
   });
 
@@ -67,7 +67,7 @@ describe('Machine', function() {
     newMachine.acceptCredits(100)
     assert.equal(newMachine.state.status, 'credited')
     assert.equal(newMachine.state.credits, 100)
-    newMachine.checkCredits('a4')
+    newMachine.findSnack('a4')
     assert.equal(newMachine.state.selection, 'a4')
   });
 
@@ -77,8 +77,8 @@ describe('Machine', function() {
     newMachine.acceptCredits(200)
     assert.equal(newMachine.state.status, 'credited')
     assert.equal(newMachine.state.credits, 200)
-    newMachine.checkCredits('a4')
-    newMachine.checkCredits('a4')
+    newMachine.findSnack('a4')
+    newMachine.findSnack('a4')
     assert.equal(newMachine.state.change, 50)
   });
 
@@ -89,7 +89,7 @@ describe('Machine', function() {
     assert.equal(newMachine.state.status, 'credited')
     assert.equal(newMachine.state.credits, 100)
     assert.equal(newMachine.state.snacks['a4'].length, 10)
-    newMachine.checkCredits('a4')
+    newMachine.findSnack('a4')
     assert.equal(newMachine.state.snacks['a4'].length, 9)
   });
 

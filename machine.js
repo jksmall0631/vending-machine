@@ -27,29 +27,47 @@ export default class Machine {
     this.state.credits = amount;
   }
 
-  checkCredits(selection) {
-    const snackKeys = Object.keys(this.state.snacks)
+  findSnack(selection) {
+    const snackKeys = Object.keys(this.state.snacks);
     snackKeys.forEach(snack => {
-      if(selection == snack){
-        if(this.state.credits >= this.state.snacks[snack][0].price){
-          this.makeSelection(snack)
-        }else{
-          alert('Gimme some mo money, fool.')
-        }
+      if(selection === snack){
+        this.isItEnough(this.state.snacks[snack][0].price, snack);
+      }else{
+        this.state.status = 'unavailable';
       }
     })
   }
 
+  isItEnough(snack) {
+    let snackPrice = this.state.snacks[snack][0].price;
+    if(credits >= snackPrice){
+      this.makeSelection(snack);
+    }else{
+      this.state.status = 'Insert more $$$';
+    }
+  }
+
   makeSelection(snack) {
+    this.state.status = 'vending';
+    this.state.selection = this.state.snacks[snack][0];
     this.state.snacks[snack].shift();
+    this.dispenseSnack();
+    this.returnChange(snack);
+  }
+
+  returnChange(snack){
     this.state.change = this.state.credits - this.state.snacks[snack][0].price;
     this.state.credits = this.state.credits - this.state.snacks[snack][0].price;
-    this.state.selection = snack
+    return this.state.change;
+  }
+
+  dispenseSnack(){
+    return this.state.selection.name;
   }
 
   restock(snack, name, price){
     while(this.state.snacks[snack].length < 10){
-      this.state.snacks[snack].push(new Snack(name, price))
+      this.state.snacks[snack].push(new Snack(name, price));
     }
   }
 
