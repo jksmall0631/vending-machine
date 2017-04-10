@@ -31,7 +31,7 @@ export default class Machine {
     const snackKeys = Object.keys(this.state.snacks);
     snackKeys.forEach(snack => {
       if(selection === snack){
-        this.isItEnough(this.state.snacks[snack][0].price, snack);
+        this.isItEnough(snack);
       }else{
         this.state.status = 'unavailable';
       }
@@ -40,7 +40,7 @@ export default class Machine {
 
   isItEnough(snack) {
     let snackPrice = this.state.snacks[snack][0].price;
-    if(credits >= snackPrice){
+    if(this.state.credits >= snackPrice){
       this.makeSelection(snack);
     }else{
       this.state.status = 'Insert more $$$';
@@ -51,13 +51,13 @@ export default class Machine {
     this.state.status = 'vending';
     this.state.selection = this.state.snacks[snack][0];
     this.state.snacks[snack].shift();
-    this.dispenseSnack();
-    this.returnChange(snack);
+    this.state.change = this.state.credits - this.state.snacks[snack][0].price;
+    this.state.credits = this.state.credits - this.state.snacks[snack][0].price;
+    // this.dispenseSnack();
+    // this.returnChange(snack);
   }
 
   returnChange(snack){
-    this.state.change = this.state.credits - this.state.snacks[snack][0].price;
-    this.state.credits = this.state.credits - this.state.snacks[snack][0].price;
     return this.state.change;
   }
 

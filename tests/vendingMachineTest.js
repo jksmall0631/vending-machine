@@ -58,7 +58,7 @@ describe('Machine', function() {
     assert.equal(newMachine.state.status, 'credited')
     assert.equal(newMachine.state.credits, 100)
     newMachine.findSnack('a4')
-    assert.equal(newMachine.state.change, 25)
+    assert.equal(newMachine.returnChange(), 25)
   });
 
   it('should return a treat', () => {
@@ -68,7 +68,7 @@ describe('Machine', function() {
     assert.equal(newMachine.state.status, 'credited')
     assert.equal(newMachine.state.credits, 100)
     newMachine.findSnack('a4')
-    assert.equal(newMachine.state.selection, 'a4')
+    assert.equal(newMachine.dispenseSnack(), 'Doritos')
   });
 
   it('should return return two treats if credit is sufficient', () => {
