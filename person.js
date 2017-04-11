@@ -1,7 +1,7 @@
 export default class Person {
   constructor() {
     this.state = {
-      credits: 500
+      credits: 500,
     }
   }
 

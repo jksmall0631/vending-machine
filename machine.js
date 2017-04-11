@@ -28,14 +28,12 @@ export default class Machine {
   }
 
   findSnack(selection) {
-    const snackKeys = Object.keys(this.state.snacks);
-    snackKeys.forEach(snack => {
-      if(selection === snack){
-        this.isItEnough(snack);
-      }else{
-        this.state.status = 'unavailable';
-      }
-    })
+    if(selection in this.state.snacks){
+      console.log('bla')
+      this.isItEnough(selection);
+    }else{
+      this.state.status = 'unavailable';
+    }
   }
 
   isItEnough(snack) {

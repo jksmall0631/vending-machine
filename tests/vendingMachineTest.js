@@ -33,23 +33,34 @@ describe('Machine', function() {
     assert.equal(newMachine.state.change, 0)
   });
 
+  it('should return "unavailable" if the snack doesn\'t exist', () => {
+    newMachine.restockAll()
+    assert.equal(newMachine.state.status, 'idle')
+    newMachine.acceptCredits(100)
+    assert.equal(newMachine.state.status, 'credited')
+    assert.equal(newMachine.state.credits, 100)
+    newMachine.findSnack('z5')
+    assert.equal(newMachine.state.status, 'unavailable')
+  })
+
   it('should check credits', () => {
     newMachine.restockAll()
     assert.equal(newMachine.state.status, 'idle')
     newMachine.acceptCredits(100)
     assert.equal(newMachine.state.status, 'credited')
     assert.equal(newMachine.state.credits, 100)
-    newMachine.findSnack('b4')
+    newMachine.findSnack('a4')
   });
 
-  it('should fail if not enough credits', () => {
+  it('should return "Insert more $$$" if not enough $$$', () => {
     newMachine.restockAll()
     assert.equal(newMachine.state.status, 'idle')
-    newMachine.acceptCredits(50)
+    newMachine.acceptCredits(25)
     assert.equal(newMachine.state.status, 'credited')
-    assert.equal(newMachine.state.credits, 50)
-    assert.equal(newMachine.findSnack('c4'), undefined)
-  });
+    assert.equal(newMachine.state.credits, 25)
+    newMachine.findSnack('a4')
+    assert.equal(newMachine.state.status, 'Insert more $$$')
+  })
 
   it('should return change if too many credits are inserted', () => {
     newMachine.restockAll()
@@ -78,7 +89,9 @@ describe('Machine', function() {
     assert.equal(newMachine.state.status, 'credited')
     assert.equal(newMachine.state.credits, 200)
     newMachine.findSnack('a4')
+    assert.equal(newMachine.dispenseSnack(), 'Doritos')
     newMachine.findSnack('a4')
+    assert.equal(newMachine.dispenseSnack(), 'Doritos')
     assert.equal(newMachine.state.change, 50)
   });
 
